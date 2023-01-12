@@ -20,11 +20,12 @@ jobs:
     - name: Run build
       run: |
         python -m build
-     - name: Upload
-      run: |
-        python -m twine upload dist/*
+    - name: Upload
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.TWINE_TEST_TOKEN }}
         TWINE_REPOSITORY: testpypi
+      run: |
+        python -m twine upload dist/*
+      
 
