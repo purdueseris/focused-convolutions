@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "focusedconv"
+version = "0.0.1"
+authors = [
+  { name="Caleb Tung", email="tung3@purdue.edu" },
+]
+description = "A small example package"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+dependencies=[
+    "torch",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/calebtung/focused-convolutions"
+"Bug Tracker" = "https://github.com/calebtung/focused-convolutions/issues"
