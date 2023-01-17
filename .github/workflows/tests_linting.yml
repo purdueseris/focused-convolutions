@@ -37,5 +37,5 @@ jobs:
         python -m pip install pytest
     - name: Running pytest on test.py
       run: |
-        python -m pytest test.py
+        python -m pytest src/test.py
   
