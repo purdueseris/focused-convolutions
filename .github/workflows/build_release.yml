@@ -1,6 +1,9 @@
 name: Release to PyPI
 
-on: [push]
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
 
 jobs:
   release:
@@ -23,8 +26,8 @@ jobs:
     - name: Upload
       env:
         TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.TWINE_TEST_TOKEN }}
-        TWINE_REPOSITORY: testpypi
+        TWINE_PASSWORD: ${{ secrets.TWINE_PYPI_KEY }}
+        TWINE_REPOSITORY: pypi
       run: |
         python -m twine upload dist/*
       
