@@ -106,7 +106,6 @@ class FocusedConv2d(nn.Conv2d):
                     self.groups
                 )
             except:
-                print("POOP1")
                 out = F.conv2d(
                     x,
                     self.weight,
@@ -117,7 +116,6 @@ class FocusedConv2d(nn.Conv2d):
                     self.groups
                 )
         else:
-            print("POOP2")
             out = F.conv2d(
                 x,
                 self.weight,
