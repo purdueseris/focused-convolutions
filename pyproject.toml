@@ -4,11 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "focusedconv"
-version = "0.0.0a1"
+version = "1.0.0"
 authors = [
   { name="Caleb Tung", email="tung3@purdue.edu" },
 ]
-description = "A small example package"
+description = "Official library for the energy-efficient Focused Convolution"
 readme = "src/focusedconv/README.md"
 requires-python = ">=3.7"
 classifiers = [
