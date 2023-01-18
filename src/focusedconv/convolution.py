@@ -6,6 +6,7 @@ import torch
 from enum import Enum
 from torch.nn.common_types import _size_2_t
 from typing import Union
+from .areaofinterest import AoI
 
 class FOCUSED_CONV_OP_MODES(Enum):
     AOI_GENERAL_MODE = 0
@@ -29,12 +30,12 @@ class FocusedConv2d(nn.Conv2d):
         padding_mode: str = 'zeros',
         device=None,
         dtype=None,
-        aoi_mask_holder: dict=None,
-        focused_conv_op_mode=1
+        aoi: AoI=None,
+        focused_conv_op_mode=FOCUSED_CONV_OP_MODES.AOI_RECT_MODE
     ) -> None:
         super().__init__(in_channels, out_channels, kernel_size, stride,
                          padding, dilation, groups, bias, padding_mode, device, dtype)
-        self.aoi_mask_holder = aoi_mask_holder
+        self.aoi = aoi
         self.focused_conv_op_mode = focused_conv_op_mode
         self.weight_mat = self.weight.view(self.out_channels, -1) # size outchannels X patchlen
 
@@ -50,7 +51,7 @@ class FocusedConv2d(nn.Conv2d):
             (w_in + 2*self.padding[1] - self.dilation[1]*(self.kernel_size[1]-1)-1)/self.stride[1]+1)
 
         if self.focused_conv_op_mode == FOCUSED_CONV_OP_MODES.AOI_GENERAL_MODE:
-            aoi_patches = F.unfold(self.aoi_mask_holder["aoi_mask"], kernel_size=self.kernel_size, padding=self.padding) # size 1 x patchLen x numpatches
+            aoi_patches = F.unfold(self.aoi.mask_tensor, kernel_size=self.kernel_size, padding=self.padding) # size 1 x patchLen x numpatches
             patch_idxes_to_keep = aoi_patches.sum(dim=1).squeeze(0) > 0 # size numpatches
             self.out_mat = torch.zeros([b, self.out_channels, len(patch_idxes_to_keep)], device=x.device) # size batchsize X outchannels X numpatches
             in_patches = F.unfold(x, kernel_size=self.kernel_size, padding=self.padding) # size batchsize X patchlen X numpatches
@@ -60,10 +61,10 @@ class FocusedConv2d(nn.Conv2d):
             out = self.out_mat.view(b, self.out_channels, h_out, -1) # size batchsize X outchannels X heightOut X widthOut
         
         elif self.focused_conv_op_mode == FOCUSED_CONV_OP_MODES.AOI_RECT_MODE:
-            h_mask = self.aoi_mask_holder["aoi_mask"].shape[0]
-            w_mask = self.aoi_mask_holder["aoi_mask"].shape[1]
+            h_mask = self.aoi.mask_tensor.shape[0]
+            w_mask = self.aoi.mask_tensor.shape[1]
 
-            aoi_nz_coords = torch.nonzero(self.aoi_mask_holder["aoi_mask"])
+            aoi_nz_coords = torch.nonzero(self.aoi.mask_tensor)
             if aoi_nz_coords.numel() == 0:
                 out = F.conv2d(
                     x,
@@ -105,6 +106,7 @@ class FocusedConv2d(nn.Conv2d):
                     self.groups
                 )
             except:
+                print("POOP1")
                 out = F.conv2d(
                     x,
                     self.weight,
@@ -115,6 +117,7 @@ class FocusedConv2d(nn.Conv2d):
                     self.groups
                 )
         else:
+            print("POOP2")
             out = F.conv2d(
                 x,
                 self.weight,
