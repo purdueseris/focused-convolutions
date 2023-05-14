@@ -1,5 +1,5 @@
 # focused-convolutions
-Repository containing the code for the paper [Irrelevant Pixels are Everywhere: Find and Exclude Them for More Efficient Computer Vision](https://ieeexplore.ieee.org/abstract/document/9870012), published in IEEE AICAS 2022.
+Repository containing the code for the paper [Irrelevant Pixels are Everywhere: Find and Exclude Them for More Efficient Computer Vision](https://ieeexplore.ieee.org/abstract/document/9870012), published in IEEE AICAS 2022, and our upcoming _IEEE Intelligent Systems_ paper.
 
 ## What is a focused convolution?
 Normal CNNs operate convolutions on the entirety of the input image. However, many input images have many pixels that are not very interesting (e.g. background pixels). This means normal CNNs are wasting time and energy on those uninteresting pixels.
